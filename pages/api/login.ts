@@ -11,7 +11,7 @@ const endpointLogin = async(
     res : NextApiResponse<respostaPadraoMsg | loginResposta>
 ) => {
     
-    const {MINHA_CHAVE_JWT} = process.env;
+    const {MINHA_CHAVE_JWT} = process.env as any;
     if(!MINHA_CHAVE_JWT){
         res.status(500).json({error : 'ENV Jwt não informado'})
     };
