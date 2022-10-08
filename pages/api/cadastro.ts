@@ -4,17 +4,16 @@ import type {cadastroRequisicao} from '../../types/cadastroRequisicao';
 import {conectarMongoDB} from '../../middlewares/conectarMongoDB';
 import {usuarioModel} from '../../models/usuarioModel';
 import md5 from 'md5';
-import {upload, uploadImagemCosmic} from '../../services/uploadImagemCosmic';
+import {updload, uploadImagemCosmic} from '../../services/uploadImagemCosmic';
 import nc from 'next-connect';
 
 const handler = nc()
-    .use(upload.single('file'))
+    .use(updload.single('file'))
     .post(async (
         req : NextApiRequest,
         res : NextApiResponse<respostaPadraoMsg> 
     ) => {
         try{
-            console.log('cadastro endpoint', req.body);
             const usuario = req.body as cadastroRequisicao;
             if(!usuario.nome || usuario.nome.length < 2){
                 return res.status(400).json({error : 'Nome inválido'})
@@ -31,10 +30,9 @@ const handler = nc()
             if(usuariosComMesmoEmail && usuariosComMesmoEmail.length > 0){
                 return res.status(400).json({error : 'Já existe uma conta com o email informado'})
             };
-            // checa se chegou alguma imagem
+
             // salvar imagem do multer para o cosmic
             const image = await uploadImagemCosmic(req);
-            console.log('endpoint img', image);
             
             // salvar no banco de dados
             const usuarioASerSalvo = {

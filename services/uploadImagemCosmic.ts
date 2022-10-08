@@ -7,34 +7,39 @@ const {
     BUCKET_AVATARES,
     BUCKET_PUBLICACOES,} = process.env;
 
-const Cosmic = cosmicjs();
-const bucketAvatares = Cosmic.bucket({
-    slug : BUCKET_AVATARES,
-    writeKey : CHAVE_DE_GRAVACAO_DOS_AVATARES
-});
-const bucketPublicacoes = Cosmic.bucket({
-    slug : BUCKET_PUBLICACOES,
-    writeKey : CHAVE_DE_GRAVACAO_DAS_PUBLICACOES 
-});
-
-const storage = multer.memoryStorage();
-const upload = multer({storage : storage});
-
-const uploadImagemCosmic = async(req : any) =>{
-    console.log('uploadImagemCosmic', req);
-    if(req?.file?.original_name){
-        const media_object = {
-            original_name : req.file.original_name,
-            buffer : req.file.buffer
-        };  
-        console.log('uploadImagemCosmic url', req.url);
-        console.log('uploadImagemCosmic media_object', media_object)
-        if(req.url && req.url.includes('publicacao')){
-            return await bucketPublicacoes.addMedia({media : media_object})
-        }else{
-            return await bucketAvatares.addMedia({media : media_object})
-        };
-    };
-};
-
-export {upload, uploadImagemCosmic};
+    const Cosmic = cosmicjs();
+    const bucketAvatares = Cosmic.bucket({
+        slug: BUCKET_AVATARES,
+        write_key: CHAVE_DE_GRAVACAO_DOS_AVATARES
+    });
+    
+    const bucketPublicacoes = Cosmic.bucket({
+        slug: BUCKET_PUBLICACOES,
+        write_key: CHAVE_DE_GRAVACAO_DAS_PUBLICACOES
+    });
+    
+    const storage = multer.memoryStorage();
+    const updload = multer({storage : storage});
+    
+    const uploadImagemCosmic = async(req : any) => {
+        if(req?.file?.originalname){            
+            if(!req.file.originalname.includes('.png') &&
+                !req.file.originalname.includes('.jpg') && 
+                !req.file.originalname.includes('.jpeg')){
+                    throw new Error('Extensao da imagem invalida');
+            } 
+    
+            const media_object = {
+                originalname: req.file.originalname,
+                buffer : req.file.buffer
+            };
+   
+            if(req.url && req.url.includes('publicacao')){
+                return await bucketPublicacoes.addMedia({media : media_object});
+            }else{
+                return await bucketAvatares.addMedia({media : media_object});
+            }
+        }
+    }
+    
+    export {updload, uploadImagemCosmic};
