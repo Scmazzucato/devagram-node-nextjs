@@ -9,5 +9,6 @@ const usuarioSchema = new Schema({
     seguindo: {type : Number, default : 0},
     publicacoes: {type : Number, default : 0}
 });
-export const usuarioModel = (mongoose.models.usuarioSchema || 
+
+export const usuarioModel = (mongoose.models.usuarios ||
     mongoose.model('usuarios', usuarioSchema));
