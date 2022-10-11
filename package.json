@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.9",
     "cosmicjs": "^4.1.2",

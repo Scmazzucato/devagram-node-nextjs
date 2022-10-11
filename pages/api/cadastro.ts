@@ -6,7 +6,7 @@ import {usuarioModel} from '../../models/usuarioModel';
 import md5 from 'md5';
 import {updload, uploadImagemCosmic} from '../../services/uploadImagemCosmic';
 import nc from 'next-connect';
-
+//comentario de teste
 const handler = nc()
     .use(updload.single('file'))
     .post(async (
