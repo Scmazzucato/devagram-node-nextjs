@@ -7,9 +7,15 @@ import {respostaPadraoMsg} from '../../types/respostaPadraoMsg'
 const pesquisaEndpoint = async(req : NextApiRequest, res : NextApiResponse<respostaPadraoMsg | any>) =>{
     try{
         if(req.method === 'GET'){
-
-            const {filtro} = req.query;
-
+            if(req?.query?.id){
+                const usuarioEncontrado = await usuarioModel.findById(req?.query?.id)
+                if(!usuarioEncontrado){
+                    return res.status(400).json({error : 'Usuário não encontrado'})
+                };
+                usuarioEncontrado.senha = null;
+                return res.status(200).json(usuarioEncontrado);
+            }else{
+                const {filtro} = req.query;
             if(!filtro || filtro.length <2){
                 return res.status(400).json({error : 'Favor informar ao menos 2 caracteres para a busca'})
             };
@@ -18,8 +24,8 @@ const pesquisaEndpoint = async(req : NextApiRequest, res : NextApiResponse<respo
                 $or: [{nome : {$regex : filtro, $options: 'i'}},
                     { email : {$regex : filtro, $options: 'i'}}]
             });
-
             return res.status(200).json({usuariosEncontrados});
+            };
 
         };
         return res.status(405).json({error : 'Metódo informado não é válido'})
